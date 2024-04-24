@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+from decouple import config
 
 import environ
 
@@ -17,14 +18,14 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "1"
+SECRET_KEY = config('SECRET_KEY')
 # SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 # DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["hightargetgroup.uz","www.hightargetgroup.uz","127.0.0.1"]
 
 # Application definition
 DJANGO_APPS = [
@@ -50,6 +51,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     'rest_framework_simplejwt',
     'django_filters',
+    'whitenoise.runserver_nostatic',
     # "axes",
 ]
 
@@ -87,6 +89,7 @@ INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -182,11 +185,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = (BASE_DIR / "static",)
+STATIC_ROOT = "/home/hightarg/hightargetgroup.uz/django/staticfiles"
+STATICFILES_DIRS = ("/home/hightarg/hightargetgroup.uz/django/static", )
+
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATICFILES_DIRS = (BASE_DIR / "static",)
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = "/home/hightarg/hightargetgroup.uz/django/media"
+# MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -285,3 +292,5 @@ LOCALE_PATHS = [
 
 MODELTRANSLATION_LANGUAGES = ('en', 'uz', 'ru')
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
